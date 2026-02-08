@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gesture Controlled Particles</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; }
+        video { position: absolute; top: 0; left: 0; transform: scaleX(-1); visibility: hidden; } /* Mirror video */
+        #canvas-container { width: 100vw; height: 100vh; }
+        #status {
+            position: absolute; top: 20px; left: 20px; color: #00ff00; 
+            font-family: monospace; font-size: 20px; z-index: 10;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+</head>
+<body>
+
+    <div id="status">Loading AI...</div>
+    <video id="input_video"></video>
+    <div id="canvas-container"></div>
+
+<script>
+    // --- 1. THREE.JS SETUP ---
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+    camera.position.z = 30;
+
+    // --- 2. PARTICLE SYSTEM ---
+    const particleCount = 3000; // Number of dots
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const targetPositions = new Float32Array(particleCount * 3); // Where particles want to go
+    
+    // Initial: Random Cloud
+    for(let i = 0; i < particleCount * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 50;
+        targetPositions[i] = positions[i]; // Start at target
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xff0055, size: 0.2 });
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // --- 3. SHAPE GENERATORS ---
+    
+    // Shape: Random Sphere (Resting)
+    function setSphereShape() {
+        for(let i = 0; i < particleCount; i++) {
+            const r = 15 * Math.cbrt(Math.random());
+            const theta = Math.random() * 2 * Math.PI;
+            const phi = Math.acos(2 * Math.random() - 1);
+            
+            targetPositions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+            targetPositions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+            targetPositions[i*3+2] = r * Math.cos(phi);
+        }
+        material.color.setHex(0x00ffff); // Cyan for neutral
+    }
+
+    // Shape: Heart
+    function setHeartShape() {
+        for(let i = 0; i < particleCount; i++) {
+            let t = Math.random() * Math.PI * 2;
+            // Heart formula
+            let x = 16 * Math.pow(Math.sin(t), 3);
+            let y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            // Spread them out a bit randomly inside the heart volume
+            const scale = 0.8; 
+            targetPositions[i*3] = (x * scale) + (Math.random()-0.5); 
+            targetPositions[i*3+1] = (y * scale) + (Math.random()-0.5);
+            targetPositions[i*3+2] = (Math.random() - 0.5) * 5; // Thickness
+        }
+        material.color.setHex(0xff0000); // Red for heart
+    }
+
+    // Shape: "I U" (Simple Text approximation with blocks)
+    function setTextShape() {
+        // Simple logic to distribute particles into "I" and "U" shapes
+        // This is simplified. Real text requires font loading.
+        for(let i = 0; i < particleCount; i++) {
+            const choice = Math.random();
+            if(choice < 0.3) { // Letter I
+                targetPositions[i*3] = -10 + (Math.random() * 2);
+                targetPositions[i*3+1] = (Math.random() - 0.5) * 20;
+                targetPositions[i*3+2] = 0;
+            } else if (choice < 0.6) { // Letter U (Left bar)
+                 targetPositions[i*3] = 5 + (Math.random() * 2);
+                 targetPositions[i*3+1] = (Math.random() - 0.5) * 20;
+                 targetPositions[i*3+2] = 0;
+            } else { // Letter U (Right bar or bottom)
+                 targetPositions[i*3] = 15 + (Math.random() * 2);
+                 targetPositions[i*3+1] = (Math.random() - 0.5) * 20;
+                 targetPositions[i*3+2] = 0;
+                 // NOTE: This is a very rough abstract "I ||" shape.
+                 // For real text, we need FontLoader (complex for single file).
+            }
+        }
+        material.color.setHex(0xff00ff); // Purple for text
+    }
+
+    // --- 4. ANIMATION LOOP ---
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Lerp (Smoothly move particles to target)
+        const positions = particles.geometry.attributes.position.array;
+        const speed = 0.05; // 0 to 1
+
+        for(let i = 0; i < particleCount * 3; i++) {
+            positions[i] += (targetPositions[i] - positions[i]) * speed;
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+        
+        // Slight rotation
+        particles.rotation.y += 0.002;
+
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // --- 5. MEDIAPIPE HAND TRACKING ---
+    const videoElement = document.getElementById('input_video');
+    const statusElement = document.getElementById('status');
+
+    function onResults(results) {
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const landmarks = results.multiHandLandmarks[0];
+            
+            // Detect Fingers (Simple logic)
+            // Tip vs PIP joint y-coordinates (0 is top, 1 is bottom)
+            const isIndexUp = landmarks[8].y < landmarks[6].y;
+            const isMiddleUp = landmarks[12].y < landmarks[10].y;
+            const isRingUp = landmarks[16].y < landmarks[14].y;
+            const isPinkyUp = landmarks[20].y < landmarks[18].y;
+
+            // Logic for Gestures
+            if (isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp) {
+                statusElement.innerText = "✌️ Peace Sign Detected -> Show Text";
+                setTextShape();
+            } 
+            else if (!isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp) {
+                 statusElement.innerText = "✊ Fist/Heart Detected -> Show Heart";
+                 setHeartShape();
+            }
+            else if (isIndexUp && isMiddleUp && isRingUp && isPinkyUp) {
+                statusElement.innerText = "🖐 Open Hand -> Reset";
+                setSphereShape();
+            }
+        }
+    }
+
+    const hands = new Hands({locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }});
+    
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.7,
+        minTrackingConfidence: 0.7
+    });
+    
+    hands.onResults(onResults);
+
+    const cameraUtils = new Camera(videoElement, {
+        onFrame: async () => {
+            await hands.send({image: videoElement});
+        },
+        width: 640,
+        height: 480
+    });
+    
+    cameraUtils.start();
+</script>
+</body>
+</html>

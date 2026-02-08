@@ -1,44 +1,556 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Love ❤️</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="./assets/heart.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For My Chimuthi</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <canvas id="particleCanvas"></canvas>
-        
-        <div class="ui-overlay">
-            <div class="header">
-                <!-- <h1 class="title">A Message For You</h1> -->
-                <p class="subtitle">Watch the magic unfold</p>
-            </div>
-            
-            <div class="input-section">
-                <input 
-                    type="text" 
-                    id="textInput" 
-                    placeholder="Type your message of love..."
-                    maxlength="20"
-                    autocomplete="off"
-                />
-            </div>
-            
-            <!-- <div class="presets">
-                <button class="preset-btn" data-text="LOVE">LOVE</button>
-                <button class="preset-btn" data-text="FOREVER">FOREVER</button>
-                <button class="preset-btn" data-text="YOU+ME">YOU+ME</button>
-                <button class="preset-btn" data-text="❤">❤</button>
-            </div> -->
+      <canvas id="particleCanvas"></canvas>
+
+      <!-- Webcam video (hidden) -->
+      <video id="webcam" autoplay playsinline style="display: none"></video>
+      <canvas id="gestureCanvas" style="display: none"></canvas>
+
+      <div class="ui-overlay">
+        <div class="header">
+          <!-- <h1 class="title">Gesture Magic</h1> -->
+          <p class="subtitle">These are my feelings for you, my love ❤️</p>
         </div>
-        
-        <div class="background-effect"></div>
+
+        <div class="gesture-controls">
+          <!-- <button id="toggleGesture" class="gesture-btn">
+                    <span class="cam-icon">📷</span> Enable Hand Gestures
+                </button> 
+                <div id="gestureStatus" class="gesture-status">Camera Off</div> -->
+          <div id="gestureHint" class="gesture-hint">
+            ✌️ Peace Sign<br />
+            ✊ Closed Fist<br />
+            🤟 Rock On<br />
+            🖕 Middle Finger<br />
+            🖐 Open Hand - Reset Ball
+          </div>
+        </div>
+      </div>
+
+      <div class="background-effect"></div>
     </div>
-    
+
+    <div class="letter">
+      <div class="message">
+        <div class="msgbox">
+          <button id="yes">Yes</button>
+          <button id="no">No</button> <br />
+          <p id="msg"></p>
+          <!-- <img src="./assets/envelope.svg" alt="" /> -->
+          <svg
+            version="1.1"
+            id="Capa_1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 2122 2122"
+            style="enable-background: new 0 0 2122 2122"
+            xml:space="preserve"
+            id="msg"
+          >
+            <path
+              style="fill: #936cad"
+              d="M1608.583,788.68V416.708l-339.541,16.844l-60.448-63.224c-20.705-21.655-54.572-23.774-77.813-4.867
+	l-98.123,79.818L790.24,457.305v-0.001l-180.089,8.934v0v322.726L457.553,913.097v0l-0.002,0l-63.77,855.652v0h1333.757V913.097
+	L1608.583,788.68z"
+            />
+            <polygon
+              style="fill: #a27db7"
+              points="1608.584,1032.052 1379.892,1260.744 1636.984,1636.426 1637.004,1636.453 
+	1727.538,1768.749 1727.538,913.097 "
+            />
+            <g>
+              <path
+                style="fill: #83579f"
+                d="M1727.538,1768.75L1727.538,1768.75l-90.534-132.297c-5.625,0.726-11.251,1.436-16.879,2.124
+		c-33.974,4.154-68.116,6.965-102.331,8.879c-57.026,3.188-114.255,3.881-171.252,4.136c-76.542,0.343-152.512-3.698-228.856-8.582
+		c-19.105-1.222-38.501-2.236-57.916-3.683c-0.834-0.062-1.669-0.116-2.503-0.18c-44.551-3.409-89.147-9.294-130.527-25.607
+		c-23.926-9.432-43.327-22.854-59.012-39.581c-17.933-19.121-31.012-42.563-40.452-69.301c-1.18-3.342-2.303-6.736-3.372-10.178
+		c-2.049-6.606-3.931-13.285-5.726-20c-0.252-0.946-0.517-1.887-0.765-2.835c-1.672-6.393-3.227-12.834-4.697-19.307
+		c-0.274-1.207-0.546-2.415-0.812-3.625c-1.425-6.447-2.77-12.924-4.022-19.431c-0.202-1.046-0.391-2.094-0.588-3.142
+		c-1.278-6.783-2.493-13.585-3.612-20.411l-0.077-0.481c-1.12-6.857-2.16-13.732-3.149-20.614c-0.134-0.925-0.273-1.848-0.405-2.774
+		c-0.945-6.672-1.834-13.351-2.685-20.028c-0.156-1.217-0.311-2.432-0.463-3.649c-0.828-6.608-1.625-13.211-2.389-19.804
+		c-0.129-1.115-0.255-2.224-0.384-3.339c-0.777-6.775-1.536-13.541-2.277-20.279l0,0l0,0c-0.922-8.396-1.824-16.758-2.733-25.066
+		c-0.935-8.553-1.816-17.109-2.659-25.667c-0.798-8.106-1.563-16.213-2.298-24.322v0v0l-174.01-174.01L457.552,913.097v0
+		l-63.771,855.652h0.001l-0.001,0H1727.538z"
+              />
+              <path
+                style="fill: #83579f"
+                d="M1636.984,1636.426l0.02,0.027l90.534,132.296v-144.574
+		C1697.35,1628.197,1667.189,1632.53,1636.984,1636.426z"
+              />
+            </g>
+
+            <g id="letterpaper">
+              <polygon
+                style="fill: #fad7d8"
+                points="1269.042,433.552 1032.656,445.279 790.241,457.305 790.241,457.304 610.151,466.238 
+                610.151,466.238 610.151,788.965 610.151,1065.696 610.151,1065.696 784.162,1239.706 784.162,1239.706 784.162,1239.707 
+                823.325,1278.869 1379.892,1260.744 1379.892,1260.744 1608.584,1032.052 1608.584,788.68 1608.584,416.708 "
+              />
+
+              <!-- Text -->
+              <text
+                x="1100"
+                y="800"
+                font-size="80"
+                text-anchor="middle"
+                fill="#333"
+              >
+                Will you be my
+                <tspan x="1100" dy="80">Valentine?</tspan>
+              </text>
+
+              <!-- Button 1 -->
+              <!-- <rect
+                x="750"
+                y="800"
+                width="300"
+                height="100"
+                rx="20"
+                fill="#FF6B6B"
+              /> -->
+              <!-- <text
+                x="900"
+                y="865"
+                font-size="40"
+                text-anchor="middle"
+                fill="white"
+              >
+                Yes
+              </text> -->
+
+              <!-- Button 2 -->
+              <!-- <rect
+                x="1100"
+                y="800"
+                width="300"
+                height="100"
+                rx="20"
+                fill="#4ECDC4"
+              />
+              <text
+                x="1250"
+                y="865"
+                font-size="40"
+                text-anchor="middle"
+                fill="white"
+              >
+                No
+              </text> -->
+            </g>
+            <g id="heart1">
+              <path
+                style="fill: #ec6672"
+                d="M1248.938,714.384c-7.625-18.258-25.424-33.634-45.178-32.491
+	c-13.632,0.788-25.649,8.985-36.135,17.734c-45.486,37.95-76.862,92.437-86.853,150.827c-5.505-30.257-14.093-60.459-30.523-86.456
+	c-16.43-25.996-41.511-47.563-71.415-54.736c-1.937-0.465-3.936-0.795-5.943-1.033l0.004-0.051
+	c-1.172-0.142-2.346-0.232-3.514-0.255l-0.051-0.002c-1.135-0.02-2.263,0.03-3.375,0.156l-0.383,0.06
+	c-0.901,0.117-1.787,0.304-2.659,0.54l-0.776,0.223c-0.985,0.314-1.955,0.687-2.883,1.187l-0.018,0.007
+	c-4.306,2.326-7.302,6.466-9.876,10.628c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.703,83.332
+	c3.857,9.209,8.022,18.285,12.484,27.219c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417
+	c2.057,3.465,4.158,6.901,6.308,10.309c6.617,10.489,13.657,20.706,21.123,30.606c10.23,13.567,21.196,26.579,32.932,38.872
+	c6.952,7.282,14.292,14.405,22.115,20.837c2.608,2.144,5.27,4.211,7.989,6.182c5.44,3.941,11.109,7.496,17.036,10.508
+	c5.928,3.012,12.115,5.481,18.59,7.248c4.354-5.241,8.581-10.601,12.749-16.013c1.295-1.683,2.58-3.375,3.858-5.073
+	c3.146-4.181,6.236-8.409,9.273-12.682c1.185-1.667,2.392-3.315,3.56-4.995c2.921-4.201,5.796-8.438,8.613-12.718l-0.078,0.005
+	c57.211-86.939,92.604-190.292,100.899-293.244C1256.057,753.177,1256.56,732.643,1248.938,714.384z"
+              />
+
+              <path
+                style="fill: #f08899"
+                d="M1181.273,854.194c17.505,4.501,39.66-22.824,49.486-61.032c9.824-38.208,3.597-72.831-13.907-77.333
+	c-17.505-4.501-39.66,22.824-49.485,61.032C1157.541,815.07,1163.767,849.693,1181.273,854.194z"
+              />
+
+              <path
+                style="fill: #db4b5c"
+                d="M1041.013,999.326c-29.107-47.534-49.586-103.074-60.525-157.541
+	c-5.732-28.541-8.54-57.461-9.04-86.549c-0.262-15.245-0.474-31.398,1.446-47.057c-1.172-0.142-2.346-0.232-3.514-0.255
+	l-0.051-0.002c-1.136-0.02-2.264,0.03-3.376,0.156l-0.383,0.06c-0.901,0.117-1.787,0.304-2.659,0.54l-0.775,0.223
+	c-0.986,0.314-1.955,0.687-2.884,1.187l-0.018,0.007c-4.305,2.326-7.302,6.466-9.876,10.628
+	c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.704,83.332c3.857,9.209,8.022,18.285,12.484,27.219
+	c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417c2.057,3.465,4.158,6.901,6.308,10.309
+	c6.617,10.489,13.658,20.706,21.123,30.606c10.23,13.567,21.197,26.579,32.933,38.872c6.952,7.282,14.292,14.405,22.115,20.837
+	c2.608,2.144,5.27,4.211,7.99,6.182c5.439,3.941,11.108,7.496,17.035,10.508c5.927,3.012,12.115,5.481,18.59,7.248
+	c4.354-5.241,8.58-10.601,12.748-16.013c1.295-1.683,2.58-3.375,3.858-5.073c3.146-4.181,6.236-8.409,9.273-12.682
+	c1.185-1.667,2.393-3.315,3.561-4.995c2.92-4.201,5.795-8.438,8.612-12.718l-0.078,0.005
+	C1104.081,1071.177,1065.747,1039.719,1041.013,999.326z"
+              />
+            </g>
+            <g id="heart2">
+              <path
+                style="fill: #ec6672"
+                d="M1248.938,714.384c-7.625-18.258-25.424-33.634-45.178-32.491
+	c-13.632,0.788-25.649,8.985-36.135,17.734c-45.486,37.95-76.862,92.437-86.853,150.827c-5.505-30.257-14.093-60.459-30.523-86.456
+	c-16.43-25.996-41.511-47.563-71.415-54.736c-1.937-0.465-3.936-0.795-5.943-1.033l0.004-0.051
+	c-1.172-0.142-2.346-0.232-3.514-0.255l-0.051-0.002c-1.135-0.02-2.263,0.03-3.375,0.156l-0.383,0.06
+	c-0.901,0.117-1.787,0.304-2.659,0.54l-0.776,0.223c-0.985,0.314-1.955,0.687-2.883,1.187l-0.018,0.007
+	c-4.306,2.326-7.302,6.466-9.876,10.628c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.703,83.332
+	c3.857,9.209,8.022,18.285,12.484,27.219c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417
+	c2.057,3.465,4.158,6.901,6.308,10.309c6.617,10.489,13.657,20.706,21.123,30.606c10.23,13.567,21.196,26.579,32.932,38.872
+	c6.952,7.282,14.292,14.405,22.115,20.837c2.608,2.144,5.27,4.211,7.989,6.182c5.44,3.941,11.109,7.496,17.036,10.508
+	c5.928,3.012,12.115,5.481,18.59,7.248c4.354-5.241,8.581-10.601,12.749-16.013c1.295-1.683,2.58-3.375,3.858-5.073
+	c3.146-4.181,6.236-8.409,9.273-12.682c1.185-1.667,2.392-3.315,3.56-4.995c2.921-4.201,5.796-8.438,8.613-12.718l-0.078,0.005
+	c57.211-86.939,92.604-190.292,100.899-293.244C1256.057,753.177,1256.56,732.643,1248.938,714.384z"
+              />
+
+              <path
+                style="fill: #f08899"
+                d="M1181.273,854.194c17.505,4.501,39.66-22.824,49.486-61.032c9.824-38.208,3.597-72.831-13.907-77.333
+	c-17.505-4.501-39.66,22.824-49.485,61.032C1157.541,815.07,1163.767,849.693,1181.273,854.194z"
+              />
+
+              <path
+                style="fill: #db4b5c"
+                d="M1041.013,999.326c-29.107-47.534-49.586-103.074-60.525-157.541
+	c-5.732-28.541-8.54-57.461-9.04-86.549c-0.262-15.245-0.474-31.398,1.446-47.057c-1.172-0.142-2.346-0.232-3.514-0.255
+	l-0.051-0.002c-1.136-0.02-2.264,0.03-3.376,0.156l-0.383,0.06c-0.901,0.117-1.787,0.304-2.659,0.54l-0.775,0.223
+	c-0.986,0.314-1.955,0.687-2.884,1.187l-0.018,0.007c-4.305,2.326-7.302,6.466-9.876,10.628
+	c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.704,83.332c3.857,9.209,8.022,18.285,12.484,27.219
+	c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417c2.057,3.465,4.158,6.901,6.308,10.309
+	c6.617,10.489,13.658,20.706,21.123,30.606c10.23,13.567,21.197,26.579,32.933,38.872c6.952,7.282,14.292,14.405,22.115,20.837
+	c2.608,2.144,5.27,4.211,7.99,6.182c5.439,3.941,11.108,7.496,17.035,10.508c5.927,3.012,12.115,5.481,18.59,7.248
+	c4.354-5.241,8.58-10.601,12.748-16.013c1.295-1.683,2.58-3.375,3.858-5.073c3.146-4.181,6.236-8.409,9.273-12.682
+	c1.185-1.667,2.393-3.315,3.561-4.995c2.92-4.201,5.795-8.438,8.612-12.718l-0.078,0.005
+	C1104.081,1071.177,1065.747,1039.719,1041.013,999.326z"
+              />
+            </g>
+            <g id="heart3">
+              <path
+                style="fill: #ec6672"
+                d="M1248.938,714.384c-7.625-18.258-25.424-33.634-45.178-32.491
+	c-13.632,0.788-25.649,8.985-36.135,17.734c-45.486,37.95-76.862,92.437-86.853,150.827c-5.505-30.257-14.093-60.459-30.523-86.456
+	c-16.43-25.996-41.511-47.563-71.415-54.736c-1.937-0.465-3.936-0.795-5.943-1.033l0.004-0.051
+	c-1.172-0.142-2.346-0.232-3.514-0.255l-0.051-0.002c-1.135-0.02-2.263,0.03-3.375,0.156l-0.383,0.06
+	c-0.901,0.117-1.787,0.304-2.659,0.54l-0.776,0.223c-0.985,0.314-1.955,0.687-2.883,1.187l-0.018,0.007
+	c-4.306,2.326-7.302,6.466-9.876,10.628c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.703,83.332
+	c3.857,9.209,8.022,18.285,12.484,27.219c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417
+	c2.057,3.465,4.158,6.901,6.308,10.309c6.617,10.489,13.657,20.706,21.123,30.606c10.23,13.567,21.196,26.579,32.932,38.872
+	c6.952,7.282,14.292,14.405,22.115,20.837c2.608,2.144,5.27,4.211,7.989,6.182c5.44,3.941,11.109,7.496,17.036,10.508
+	c5.928,3.012,12.115,5.481,18.59,7.248c4.354-5.241,8.581-10.601,12.749-16.013c1.295-1.683,2.58-3.375,3.858-5.073
+	c3.146-4.181,6.236-8.409,9.273-12.682c1.185-1.667,2.392-3.315,3.56-4.995c2.921-4.201,5.796-8.438,8.613-12.718l-0.078,0.005
+	c57.211-86.939,92.604-190.292,100.899-293.244C1256.057,753.177,1256.56,732.643,1248.938,714.384z"
+              />
+
+              <path
+                style="fill: #f08899"
+                d="M1181.273,854.194c17.505,4.501,39.66-22.824,49.486-61.032c9.824-38.208,3.597-72.831-13.907-77.333
+	c-17.505-4.501-39.66,22.824-49.485,61.032C1157.541,815.07,1163.767,849.693,1181.273,854.194z"
+              />
+
+              <path
+                style="fill: #db4b5c"
+                d="M1041.013,999.326c-29.107-47.534-49.586-103.074-60.525-157.541
+	c-5.732-28.541-8.54-57.461-9.04-86.549c-0.262-15.245-0.474-31.398,1.446-47.057c-1.172-0.142-2.346-0.232-3.514-0.255
+	l-0.051-0.002c-1.136-0.02-2.264,0.03-3.376,0.156l-0.383,0.06c-0.901,0.117-1.787,0.304-2.659,0.54l-0.775,0.223
+	c-0.986,0.314-1.955,0.687-2.884,1.187l-0.018,0.007c-4.305,2.326-7.302,6.466-9.876,10.628
+	c-24.033,38.864-22.737,88.3-13.7,133.092c5.759,28.548,14.454,56.473,25.704,83.332c3.857,9.209,8.022,18.285,12.484,27.219
+	c2.229,4.463,4.531,8.887,6.907,13.274c2.815,5.197,5.73,10.336,8.748,15.417c2.057,3.465,4.158,6.901,6.308,10.309
+	c6.617,10.489,13.658,20.706,21.123,30.606c10.23,13.567,21.197,26.579,32.933,38.872c6.952,7.282,14.292,14.405,22.115,20.837
+	c2.608,2.144,5.27,4.211,7.99,6.182c5.439,3.941,11.108,7.496,17.035,10.508c5.927,3.012,12.115,5.481,18.59,7.248
+	c4.354-5.241,8.58-10.601,12.748-16.013c1.295-1.683,2.58-3.375,3.858-5.073c3.146-4.181,6.236-8.409,9.273-12.682
+	c1.185-1.667,2.393-3.315,3.561-4.995c2.92-4.201,5.795-8.438,8.612-12.718l-0.078,0.005
+	C1104.081,1071.177,1065.747,1039.719,1041.013,999.326z"
+              />
+            </g>
+            <path
+              style="fill: #65378d"
+              d="M1620.125,1638.577c-33.974,4.154-68.116,6.965-102.331,8.879
+	c-57.026,3.188-114.255,3.881-171.252,4.136c-76.541,0.343-152.51-3.698-228.856-8.582c-19.105-1.222-38.501-2.236-57.916-3.683
+	c-0.834-0.062-1.669-0.116-2.503-0.18c-44.551-3.409-89.146-9.294-130.527-25.607c-23.926-9.432-43.327-22.854-59.012-39.581
+	c-17.932-19.121-31.012-42.563-40.452-69.301c-1.18-3.342-2.303-6.736-3.372-10.178c-2.049-6.606-3.931-13.285-5.726-20
+	c-0.252-0.946-0.517-1.887-0.765-2.835c-1.672-6.393-3.227-12.834-4.697-19.307c-0.273-1.207-0.544-2.415-0.812-3.625
+	c-1.425-6.447-2.77-12.924-4.022-19.431c-0.201-1.046-0.391-2.094-0.588-3.142c-1.277-6.783-2.492-13.585-3.612-20.411l-0.076-0.481
+	c-1.121-6.857-2.159-13.732-3.15-20.614c-0.134-0.925-0.273-1.848-0.405-2.774c-0.945-6.672-1.834-13.351-2.685-20.028
+	c-0.156-1.217-0.311-2.432-0.463-3.649c-0.828-6.608-1.625-13.211-2.389-19.804c-0.129-1.115-0.255-2.224-0.382-3.339
+	c-0.778-6.775-1.537-13.541-2.276-20.279h-0.002l-398.07,453.987l-0.001,0h1333.757v-0.001l-90.534-132.296
+	C1631.379,1637.179,1625.753,1637.889,1620.125,1638.577z"
+            />
+          </svg>
+        </div>
+        <!-- <div class="line"></div> -->
+        <img id="dog" src="./assets/Cute Doggie.gif" alt="" />
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
-</body>
+    <script>
+      $(document).ready(function () {
+        $("#yes").click(function () {
+          $(".letter").fadeOut(1000);
+          $(".container").css("display", "block");
+        });
+
+        $("#no").on("click", function () {
+          $("#yes").css("left", "100px");
+          $("#msg").css("display", "flex");
+          $("#msg").text("NOOOOO,you gotta say yes cuz u r mine ❤️");
+
+          setTimeout(() => {
+            $(this).css("display", "none");
+          }, 900);
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let button = new ExplosiveButton("#no");
+      });
+
+      class ExplosiveButton {
+        constructor(el) {
+          this.element = document.querySelector(el);
+          this.width = 0;
+          this.height = 0;
+          this.centerX = 0;
+          this.centerY = 0;
+          this.pieceWidth = 0;
+          this.pieceHeight = 0;
+          this.piecesX = 9;
+          this.piecesY = 4;
+          this.duration = 1000;
+
+          this.updateDimensions();
+          window.addEventListener("resize", this.updateDimensions.bind(this));
+
+          if (document.body.animate)
+            this.element.addEventListener(
+              "click",
+              this.explode.bind(this, this.duration),
+            );
+        }
+        updateDimensions() {
+          this.width = pxToEm(this.element.offsetWidth);
+          this.height = pxToEm(this.element.offsetHeight);
+          this.centerX = this.width / 2;
+          this.centerY = this.height / 2;
+          this.pieceWidth = this.width / this.piecesX;
+          this.pieceHeight = this.height / this.piecesY;
+        }
+        explode(duration) {
+          let explodingState = "exploding";
+
+          if (!this.element.classList.contains(explodingState)) {
+            this.element.classList.add(explodingState);
+
+            this.createParticles("fire", 25, duration);
+            this.createParticles(
+              "debris",
+              this.piecesX * this.piecesY,
+              duration,
+            );
+          }
+        }
+        createParticles(kind, count, duration) {
+          for (let c = 0; c < count; ++c) {
+            let r = randomFloat(0.25, 0.5),
+              diam = r * 2,
+              xBound = this.centerX - r,
+              yBound = this.centerY - r,
+              easing = "cubic-bezier(0.15,0.5,0.5,0.85)";
+
+            if (kind == "fire") {
+              let x = this.centerX + randomFloat(-xBound, xBound),
+                y = this.centerY + randomFloat(-yBound, yBound),
+                a = calcAngle(this.centerX, this.centerY, x, y),
+                dist = randomFloat(1, 5);
+
+              new FireParticle(
+                this.element,
+                x,
+                y,
+                diam,
+                diam,
+                a,
+                dist,
+                duration,
+                easing,
+              );
+            } else if (kind == "debris") {
+              let x =
+                  this.pieceWidth / 2 + this.pieceWidth * (c % this.piecesX),
+                y =
+                  this.pieceHeight / 2 +
+                  this.pieceHeight * Math.floor(c / this.piecesX),
+                a = calcAngle(this.centerX, this.centerY, x, y),
+                dist = randomFloat(4, 7);
+
+              new DebrisParticle(
+                this.element,
+                x,
+                y,
+                this.pieceWidth,
+                this.pieceHeight,
+                a,
+                dist,
+                duration,
+                easing,
+              );
+            }
+          }
+        }
+      }
+      class Particle {
+        constructor(parent, x, y, w, h, angle, distance = 1, className2 = "") {
+          let width = `${w}em`,
+            height = `${h}em`,
+            adjustedAngle = angle + Math.PI / 2;
+
+          this.div = document.createElement("div");
+          this.div.className = "particle";
+
+          if (className2) this.div.classList.add(className2);
+
+          this.div.style.width = width;
+          this.div.style.height = height;
+
+          parent.appendChild(this.div);
+
+          this.s = {
+            x: x - w / 2,
+            y: y - h / 2,
+          };
+          this.d = {
+            x: this.s.x + Math.sin(adjustedAngle) * distance,
+            y: this.s.y - Math.cos(adjustedAngle) * distance,
+          };
+        }
+        runSequence(
+          el,
+          keyframesArray,
+          duration = 1e3,
+          easing = "linear",
+          delay = 0,
+        ) {
+          let animation = el.animate(keyframesArray, {
+            duration: duration,
+            easing: easing,
+            delay: delay,
+          });
+          animation.onfinish = () => {
+            let parentCL = el.parentElement.classList;
+
+            el.remove();
+
+            if (!document.querySelector(".particle"))
+              parentCL.remove(...parentCL);
+          };
+        }
+      }
+      class DebrisParticle extends Particle {
+        constructor(parent, x, y, w, h, angle, distance, duration, easing) {
+          super(parent, x, y, w, h, angle, distance, "particle--debris");
+
+          let maxAngle = 1080,
+            rotX = randomInt(0, maxAngle),
+            rotY = randomInt(0, maxAngle),
+            rotZ = randomInt(0, maxAngle);
+
+          this.runSequence(
+            this.div,
+            [
+              {
+                opacity: 1,
+                transform: `translate(${this.s.x}em,${this.s.y}em) rotateX(0) rotateY(0) rotateZ(0)`,
+              },
+              {
+                opacity: 1,
+              },
+              {
+                opacity: 1,
+              },
+              {
+                opacity: 1,
+              },
+              {
+                opacity: 0,
+                transform: `translate(${this.d.x}em,${this.d.y}em) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`,
+              },
+            ],
+            randomInt(duration / 2, duration),
+            easing,
+          );
+        }
+      }
+      class FireParticle extends Particle {
+        constructor(parent, x, y, w, h, angle, distance, duration, easing) {
+          super(parent, x, y, w, h, angle, distance, "particle--fire");
+
+          let sx = this.s.x,
+            sy = this.s.y,
+            dx = this.d.x,
+            dy = this.d.y;
+
+          this.runSequence(
+            this.div,
+            [
+              {
+                background: "hsl(60,100%,100%)",
+                transform: `translate(${sx}em,${sy}em) scale(1)`,
+              },
+              {
+                background: "hsl(60,100%,80%)",
+                transform: `translate(${sx + (dx - sx) * 0.25}em,${sy + (dy - sy) * 0.25}em) scale(4)`,
+              },
+              {
+                background: "hsl(40,100%,60%)",
+                transform: `translate(${sx + (dx - sx) * 0.5}em,${sy + (dy - sy) * 0.5}em) scale(7)`,
+              },
+              {
+                background: "hsl(20,100%,40%)",
+              },
+              {
+                background: "hsl(0,0%,20%)",
+                transform: `translate(${dx}em,${dy}em) scale(0)`,
+              },
+            ],
+            randomInt(duration / 2, duration),
+            easing,
+          );
+        }
+      }
+      function calcAngle(x1, y1, x2, y2) {
+        let opposite = y2 - y1,
+          adjacent = x2 - x1,
+          angle = Math.atan(opposite / adjacent);
+
+        if (adjacent < 0) angle += Math.PI;
+
+        if (isNaN(angle)) angle = 0;
+
+        return angle;
+      }
+      function propertyUnitsStripped(el, property, unit) {
+        let cs = window.getComputedStyle(el),
+          valueRaw = cs.getPropertyValue(property),
+          value = +valueRaw.substr(0, valueRaw.indexOf(unit));
+
+        return value;
+      }
+      function pxToEm(px) {
+        let el = document.querySelector(":root");
+        return px / propertyUnitsStripped(el, "font-size", "px");
+      }
+      function randomFloat(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+      function randomInt(min, max) {
+        return Math.round(Math.random() * (max - min)) + min;
+      }
+    </script>
+  </body>
 </html>
