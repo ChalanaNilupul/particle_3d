@@ -124,7 +124,7 @@ function textToParticles(text) {
     canvas.height = 400;
     
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 120px Playfair Display, serif';
+    ctx.font = 'bold 120px Poppins, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
@@ -605,7 +605,7 @@ function handleGesture(gesture) {
     
     switch(gesture) {
         case 'peace':
-            textToParticles('WANNA LICK YOU'); // Changed from setPeaceSignShape()
+            textToParticles('WANNA LICK U'); // Changed from setPeaceSignShape()
             shapeName = 'Wanna Lick You 👅';
             break;
             
@@ -617,7 +617,7 @@ function handleGesture(gesture) {
             
         case 'middlefinger':  // NEW: Add middle finger case
             textToParticles('F ME BAD');
-            shapeName = 'F Me Bad 🔥';
+            shapeName = 'F Me Bad';
             console.log('Middle finger detected');
             break;
             
